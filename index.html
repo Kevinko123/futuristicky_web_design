@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUTURISTICKÝ WEB DESIGN | Digitálne Revolúcie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --neon-cyan: #00f9ff;
+            --neon-purple: #b300ff;
+            --neon-pink: #ff00c8;
+            --dark-space: #050510;
+            --cosmic-blue: #0a1a2a;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-space);
+            color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        .orbitron {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 40px currentColor;
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 15px currentColor, 0 0 30px currentColor, inset 0 0 10px currentColor;
+        }
+        
+        .cyber-border {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid transparent;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            border-radius: inherit;
+        }
+        
+        .matrix-fall {
+            position: absolute;
+            font-family: monospace;
+            color: rgba(0, 255, 100, 0.7);
+            pointer-events: none;
+            user-select: none;
+            text-shadow: 0 0 5px #00ff40;
+        }
+        
+        .holographic-card {
+            background: rgba(5, 10, 25, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 249, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 150, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .holographic-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 0 50px rgba(0, 200, 255, 0.3);
+            border-color: rgba(0, 249, 255, 0.3);
+        }
+        
+        .service-icon {
+            transition: all 0.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        }
+        
+        .service-card:hover .service-icon {
+            transform: translateY(-15px) scale(1.2);
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+        
+        .cyber-btn {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.4s;
+        }
+        
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 249, 255, 0.5), transparent);
+            transform: rotate(45deg);
+            transition: 0.6s;
+            z-index: -1;
+        }
+        
+        .cyber-btn:hover::before {
+            left: 100%;
+            top: 100%;
+        }
+        
+        .cyber-btn:hover {
+            box-shadow: 0 0 30px rgba(0, 200, 255, 0.5);
+        }
+        
+        .input-field {
+            background: rgba(0, 10, 30, 0.3);
+            border: none;
+            border-bottom: 2px solid rgba(0, 249, 255, 0.3);
+            transition: all 0.4s;
+        }
+        
+        .input-field:focus {
+            border-bottom-color: var(--neon-cyan);
+            box-shadow: 0 10px 30px -10px rgba(0, 249, 255, 0.3);
+            background: rgba(0, 20, 50, 0.5);
+        }
+        
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        .cyber-loader {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .cyber-loader span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(calc(18deg * var(--i)));
+        }
+        
+        .cyber-loader span::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-cyan),
+                        0 0 20px var(--neon-cyan),
+                        0 0 40px var(--neon-cyan),
+                        0 0 60px var(--neon-cyan),
+                        0 0 80px var(--neon-cyan),
+                        0 0 100px var(--neon-cyan);
+            animation: cyberLoader 2s linear infinite;
+            animation-delay: calc(0.1s * var(--i));
+        }
+        
+        @keyframes cyberLoader {
+            0% { transform: scale(1); }
+            50%, 100% { transform: scale(0.1); }
+        }
+        
+        .cyber-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(0, 249, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 249, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 50s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 1000px 1000px; }
+        }
+        
+        .cyber-line {
+            position: absolute;
+            height: 100%;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, var(--neon-cyan), transparent);
+            animation: lineScan 8s linear infinite;
+            opacity: 0.5;
+        }
+        
+        @keyframes lineScan {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+        
+        .cyber-cube {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            transform-style: preserve-3d;
+            animation: cubeRotate 20s linear infinite;
+        }
+        
+        @keyframes cubeRotate {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        .cube-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 150, 255, 0.1);
+            border: 2px solid var(--neon-cyan);
+            box-shadow: inset 0 0 50px rgba(0, 150, 255, 0.2),
+                        0 0 50px rgba(0, 150, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .cube-front { transform: translateZ(150px); }
+        .cube-back { transform: rotateY(180deg) translateZ(150px); }
+        .cube-right { transform: rotateY(90deg) translateZ(150px); }
+        .cube-left { transform: rotateY(-90deg) translateZ(150px); }
+        .cube-top { transform: rotateX(90deg) translateZ(150px); }
+        .cube-bottom { transform: rotateX(-90deg) translateZ(150px); }
+        
+        .cyber-badge {
+            position: relative;
+            display: inline-block;
+            padding: 5px 15px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            overflow: hidden;
+        }
+        
+        .cyber-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--neon-cyan);
+            box-shadow: inset 0 0 10px var(--neon-cyan),
+                        0 0 10px var(--neon-cyan);
+            animation: badgeGlow 2s linear infinite;
+        }
+        
+        @keyframes badgeGlow {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+        }
+        
+        .cyber-timeline {
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .cyber-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--neon-cyan), transparent);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -50px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        .cyber-underline {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .cyber-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-purple));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .cyber-underline:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .cyber-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 249, 255, 0.3);
+        }
+        
+        .cyber-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            position: relative;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s;
+        }
+        
+        .cyber-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--neon-cyan);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .cyber-tab.active {
+            color: white;
+        }
+        
+        .cyber-tab.active::after {
+            transform: scaleX(1);
+        }
+        
+        .cyber-panel {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .cyber-panel.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .cyber-countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .countdown-item {
+            text-align: center;
+        }
+        
+        .countdown-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            position: relative;
+        }
+        
+        .countdown-number::after {
+            content: ':';
+            position: absolute;
+            right: -15px;
+            color: var(--neon-purple);
+        }
+        
+        .countdown-item:last-child .countdown-number::after {
+            display: none;
+        }
+        
+        .countdown-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .cyber-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 5, 15, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s;
+        }
+        
+        .cyber-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--dark-space);
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 50px rgba(0, 249, 255, 0.3);
+            max-width: 600px;
+            width: 90%;
+            padding: 30px;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.5s;
+        }
+        
+        .cyber-modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: var(--neon-cyan);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: var(--neon-pink);
+        }
+        
+        .cyber-tooltip {
+            position: relative;
+        }
+        
+        .cyber-tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 10, 30, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            border: 1px solid var(--neon-cyan);
+        }
+        
+        .cyber-tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+            bottom: calc(100% + 5px);
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Cyber Grid Background -->
+    <div class="cyber-grid"></div>
+    
+    <!-- Loading Animation -->
+    <div id="cyber-loader" class="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center">
+        <div class="cyber-loader">
+            <span style="--i:1"></span>
+            <span style="--i:2"></span>
+            <span style="--i:3"></span>
+            <span style="--i:4"></span>
+            <span style="--i:5"></span>
+            <span style="--i:6"></span>
+            <span style="--i:7"></span>
+            <span style="--i:8"></span>
+            <span style="--i:9"></span>
+            <span style="--i:10"></span>
+        </div>
+        <div class="mt-8 text-2xl md:text-4xl font-bold orbitron text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
+            INICIALIZÁCIA SYSTÉMU...
+        </div>
+        <div class="mt-4 w-64 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <div id="cyber-progress" class="h-full bg-gradient-to-r from-cyan-500 to-purple-600" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Matrix Code Rain -->
+    <div id="matrix-rain"></div>
+    
+    <!-- Particle JS Background -->
+    <div id="particles-js"></div>
+    
+    <!-- Cyber Scan Line -->
+    <div class="cyber-line" style="left: 20%; animation-delay: 0s;"></div>
+    <div class="cyber-line" style="left: 50%; animation-delay: -2s;"></div>
+    <div class="cyber-line" style="left: 80%; animation-delay: -4s;"></div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen relative overflow-hidden flex items-center justify-center">
+        <div class="container mx-auto px-6 relative z-10 text-center">
+            <div class="cyber-badge mb-6">NOVÁ GENERÁCIA WEBOV</div>
+            
+            <h1 class="text-5xl md:text-8xl lg:text-9xl font-bold orbitron mb-8">
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 neon-text">DIGITÁLNA</span>
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500 neon-text">REVOLÚCIA</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl max-w-4xl mx-auto text-gray-300 mb-12">
+                Vytváram <span class="cyber-underline">impozantné webové zážitky</span> ktoré prekonávajú hranice dizajnu a technológií. Tvoj web bude nielen funkčný, ale aj <span class="text-cyan-400">nezabudnuteľný</span>.
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-6 mt-16">
+                <a href="#services" class="px-10 py-5 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-full font-bold orbitron text-white hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-500 cyber-btn">
+                    <i class="fas fa-rocket mr-3"></i> MOJE SLUŽBY
+                </a>
+                <a href="#contact" class="px-10 py-5 border-2 border-cyan-400 rounded-full font-bold orbitron text-white hover:bg-cyan-500/10 hover:shadow-xl hover:shadow-cyan-500/20 transition-all duration-500 cyber-btn">
+                    <i class="fas fa-paper-plane mr-3"></i> KONTAKTUJ MA
+                </a>
+            </div>
+            
+            <div class="absolute bottom-10 left-0 right-0 flex justify-center">
+                <a href="#about" class="text-4xl text-cyan-400 hover:text-purple-400 animate-bounce">
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Floating Cyber Elements -->
+        <div class="absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-cyan-500/10 blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-1/3 right-1/4 w-40 h-40 rounded-full bg-purple-500/10 blur-3xl animate-pulse"></div>
+        <div class="absolute top-1/3 right-20 w-24 h-24 rounded-full bg-pink-500/10 blur-3xl animate-pulse"></div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-28 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-6xl font-bold orbitron mb-6">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">MOJA FILOZOFIA</span>
+                </h2>
+                <div class="w-32 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto mb-8"></div>
+                <p class="text-xl md:text-2xl max-w-4xl mx-auto text-gray-300">
+                    Verím, že každý web by mal byť <span class="text-cyan-400">technologickým majstrovským dielom</span> a zároveň <span class="text-purple-400">umeleckým zážitkom</span>.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative">
+                    <div class="holographic-card rounded-2xl overflow-hidden relative h-[500px]">
+                        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')] bg-cover bg-center"></div>
+                        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80')] bg-cover bg-center" style="width: 50%"></div>
+                        <div class="slider absolute top-0 bottom-0 w-1 bg-white left-1/2 transform -translate-x-1/2 cursor-ew-resize"></div>
+                        <div class="slider-handle absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/50 flex items-center justify-center">
+                            <i class="fas fa-arrows-alt-h text-xs text-black"></i>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-5 -left-5 bg-black/80 backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-gray-800 z-10 neon-glow" style="color: var(--neon-cyan)">
+                        <h4 class="orbitron text-cyan-400 mb-2">TRANSFORMÁCIA REALITY</h4>
+                        <p class="text-sm text-gray-300">Obyčajný web vs. môj futuristický prístup</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="mb-12">
+                        <h3 class="text-3xl md:text-4xl font-bold orbitron mb-6 text-white">
+                            Prečo by som mal byť tvojím <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">digitálnym architektom</span>?
+                        </h3>
+                        <p class="text-gray-300 mb-8 text-lg">
+                            S viac ako 10 rokmi skúseností v tvorbe webových stránok prinášam unikátnu kombináciu kreatívneho dizajnu a technickej excelencie. Každý projekt je pre mňa osobnou výzvou, kde sa snažím prekonať hranice možného.
+                        </p>
+                        
+                        <div class="cyber-timeline">
+                            <div class="timeline-item">
+                                <h4 class="orbitron text-xl text-cyan-400 mb-2">2013 - Začiatky</h4>
+                                <p class="text-gray-400">Prvé kroky v HTML a CSS, vytváranie jednoduchých statických stránok</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="orbitron text-xl text-purple-400 mb-2">2016 - Profesionalizácia</h4>
+                                <p class="text-gray-400">Prvé komerčné projekty, zvládnutie JavaScriptu a PHP</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="orbitron text-xl text-pink-400 mb-2">2020 - Špecializácia</h4>
+                                <p class="text-gray-400">Zameranie na moderné frameworky a pokročilé UX princípy</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="orbitron text-xl text-cyan-400 mb-2">2023 - Vrchol</h4>
+                                <p class="text-gray-400">Tvorba komplexných webových aplikácií s 3D a AI prvkami</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="holographic-card p-8 rounded-2xl">
+                        <h4 class="orbitron text-cyan-400 mb-4">MÔJ PRÍBEH</h4>
+                        <p class="text-gray-300 mb-6">
+                            Začal som ako samouk s vášňou pre dizajn a technológie. Postupne som sa vypracoval na profesionála, ktorý dokáže premeniť vašu víziu na digitálnu realitu. Mojím cieľom je vytvárať weby, ktoré nielen fungujú, ale aj inšpirujú.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <div class="px-4 py-2 bg-cyan-900/30 border border-cyan-400/30 rounded-full text-sm text-cyan-400">#Vášne</div>
+                            <div class="px-4 py-2 bg-purple-900/30 border border-purple-400/30 rounded-full text-sm text-purple-400">#Kreativita</div>
+                            <div class="px-4 py-2 bg-pink-900/30 border border-pink-400/30 rounded-full text-sm text-pink-400">#Inovácie</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-28 bg-gradient-to-b from-black to-gray-900/50 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-6xl font-bold orbitron mb-6">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">MOJE SLUŽBY</span>
+                </h2>
+                <div class="w-32 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto mb-8"></div>
+                <p class="text-xl md:text-2xl max-w-4xl mx-auto text-gray-300">
+                    Ponúkam <span class="text-cyan-400">kompletný balík služieb</span> pre vašu digitálnu transformáciu od A po Z
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
+                <!-- Service 1 -->
+                <div class="service-card holographic-card rounded-2xl p-8">
+                    <div class="service-icon text-6xl text-cyan-400 mb-6">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold orbitron mb-4 text-white">Webový Dizajn</h3>
+                    <p class="text-gray-300 mb-6 text-lg">
+                        Futuristický, responzívny dizajn, ktorý ohurí vašich návštevníkov na prvý pohľad.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <div class="text-cyan-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">Moderný UI/UX dizajn</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="text-cyan-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">Kompletná responzivita</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="text-cyan-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">Animácie a interaktivita</span>
+                        </li>
+                    </ul>
+                    <div class="text-cyan-400 font-bold orbitron text-2xl">OD 1200€</div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card holographic-card rounded-2xl p-8">
+                    <div class="service-icon text-6xl text-purple-400 mb-6">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold orbitron mb-4 text-white">Webový Vývoj</h3>
+                    <p class="text-gray-300 mb-6 text-lg">
+                        Čistý, optimalizovaný kód, ktorý zabezpečí rýchlosť a bezproblémovú funkčnosť.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <div class="text-purple-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">Moderné technológie</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="text-purple-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">Optimalizácia výkonu</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="text-purple-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">Bezpečnostné riešenia</span>
+                        </li>
+                    </ul>
+                    <div class="text-purple-400 font-bold orbitron text-2xl">OD 1500€</div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card holographic-card rounded-2xl p-8">
+                    <div class="service-icon text-6xl text-pink-400 mb-6">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold orbitron mb-4 text-white">E-commerce</h3>
+                    <p class="text-gray-300 mb-6 text-lg">
+                        Komplexné riešenia pre online predaj, ktoré zvýšia vaše tržby.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-start">
+                            <div class="text-pink-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">E-shop na mieru</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="text-pink-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">Platobné brány</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="text-pink-400 mt-1 mr-3"><i class="fas fa-check-circle"></i></div>
+                            <span class="text-gray-300">SEO optimalizácia</span>
+                        </li>
+                    </ul>
+                    <div class="text-pink-400 font-bold orbitron text-2xl">OD 2000€</div>
+                </div>
+            </div>
+            
+            <!-- 3D Web Model -->
+            <div class="text-center">
+                <h3 class="text-3xl md:text-5xl font-bold orbitron mb-12 text-white">
+                    Pozrite si <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">3D model</span> webu
+                </h3>
+                
+                <div class="flex justify-center mb-16">
+                    <div class="cyber-cube">
+                        <div class="cube-face cube-front"><i class="fas fa-eye text-5xl"></i></div>
+                        <div class="cube-face cube-back"><i class="fas fa-database text-5xl"></i></div>
+                        <div class="cube-face cube-right"><i class="fas fa-mobile-alt text-5xl"></i></div>
+                        <div class="cube-face cube-left"><i class="fas fa-bolt text-5xl"></i></div>
+                        <div class="cube-face cube-top"><i class="fas fa-search text-5xl"></i></div>
+                        <div class="cube-face cube-bottom"><i class="fas fa-shield-alt text-5xl"></i></div>
+                    </div>
+                </div>
+                
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Každý web, ktorý vytvorím, je komplexným riešením zohľadňujúcim všetky aspekty modernej webovej prítomnosti - od dizajnu po bezpečnosť.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 bg-gradient-to-r from-black to-gray-900/80 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="holographic-card p-8 rounded-2xl">
+                    <div class="text-5xl md:text-7xl font-bold orbitron text-cyan-400 mb-4" id="stat1">0</div>
+                    <div class="text-xl text-gray-300">Dokončených projektov</div>
+                </div>
+                <div class="holographic-card p-8 rounded-2xl">
+                    <div class="text-5xl md:text-7xl font-bold orbitron text-purple-400 mb-4" id="stat2">0</div>
+                    <div class="text-xl text-gray-300">Spokojných klientov</div>
+                </div>
+                <div class="holographic-card p-8 rounded-2xl">
+                    <div class="text-5xl md:text-7xl font-bold orbitron text-pink-400 mb-4" id="stat3">0</div>
+                    <div class="text-xl text-gray-300">Rokov skúseností</div>
+                </div>
+                <div class="holographic-card p-8 rounded-2xl">
+                    <div class="text-5xl md:text-7xl font-bold orbitron text-cyan-400 mb-4" id="stat4">0</div>
+                    <div class="text-xl text-gray-300">Kódu napísaných riadkov</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-28 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-6xl font-bold orbitron mb-6">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">KONTAKT</span>
+                </h2>
+                <div class="w-32 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto mb-8"></div>
+                <p class="text-xl md:text-2xl max-w-4xl mx-auto text-gray-300">
+                    Pripravený transformovať vašu digitálnu prítomnosť? Napíšte mi a dohodneme sa na ďalších krokoch.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <form id="contact-form" class="space-y-8">
+                        <div>
+                            <label for="name" class="block text-gray-300 mb-3 text-lg">Meno</label>
+                            <input type="text" id="name" class="w-full px-6 py-4 input-field rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 text-lg" required>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-gray-300 mb-3 text-lg">Email</label>
+                            <input type="email" id="email" class="w-full px-6 py-4 input-field rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 text-lg" required>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-gray-300 mb-3 text-lg">Správa</label>
+                            <textarea id="message" rows="6" class="w-full px-6 py-4 input-field rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 text-lg" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full px-8 py-5 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-xl font-bold orbitron text-white hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-500 cyber-btn text-xl">
+                            <i class="fas fa-paper-plane mr-3"></i> ODOSLAŤ SPRÁVU
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="space-y-8">
+                    <div class="holographic-card rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold orbitron mb-6 text-white">Kontaktné informácie</h3>
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="text-cyan-400 mt-1 mr-6 text-2xl"><i class="fas fa-envelope"></i></div>
+                                <div>
+                                    <div class="text-gray-400 text-lg">Email</div>
+                                    <div class="text-white text-xl">info@cyberwebdesign.sk</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="text-purple-400 mt-1 mr-6 text-2xl"><i class="fas fa-phone-alt"></i></div>
+                                <div>
+                                    <div class="text-gray-400 text-lg">Telefón</div>
+                                    <div class="text-white text-xl">+421 987 654 321</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="text-pink-400 mt-1 mr-6 text-2xl"><i class="fas fa-map-marker-alt"></i></div>
+                                <div>
+                                    <div class="text-gray-400 text-lg">Lokalita</div>
+                                    <div class="text-white text-xl">Slovensko (Práca pre celý svet)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="holographic-card rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold orbitron mb-6 text-white">Pracovné hodiny</h3>
+                        <div class="space-y-4 text-lg">
+                            <div class="flex justify-between">
+                                <span class="text-gray-300">Pondelok - Piatok</span>
+                                <span class="text-white">9:00 - 18:00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-300">Sobota</span>
+                                <span class="text-white">10:00 - 15:00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-300">Nedeľa</span>
+                                <span class="text-white">Zatvorené</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-cyan-400 text-2xl transition-all duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-purple-400 text-2xl transition-all duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-cyan-400 text-2xl transition-all duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-pink-400 text-2xl transition-all duration-300">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-cyan-900/30 to-purple-900/30 relative overflow-hidden">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold orbitron mb-8 text-white">
+                Pripravený na <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">digitálnu revolúciu</span>?
+            </h2>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
+                Neváhaj ma kontaktovať a daj svojmu biznisu digitálnu podobu, ktorá ho vynesie medzi špičku.
+            </p>
+            <a href="#contact" class="inline-block px-12 py-5 bg-black rounded-full font-bold orbitron text-white hover:bg-gray-900 transition-all duration-500 border-2 border-cyan-400 hover:border-purple-400 text-xl">
+                ZAČAŤ PROJEKT <i class="fas fa-arrow-right ml-3"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/80 py-16 border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div class="mb-8 md:mb-0">
+                    <div class="text-3xl font-bold orbitron text-white mb-4">CYBER WEB DESIGN</div>
+                    <div class="text-gray-400 text-lg">Weby, ktoré vyzerajú ako budúcnosť</div>
+                </div>
+                
+                <div class="flex space-x-8">
+                    <a href="#hero" class="text-gray-400 hover:text-cyan-400 text-lg transition-all duration-300">Domov</a>
+                    <a href="#about" class="text-gray-400 hover:text-purple-400 text-lg transition-all duration-300">O mne</a>
+                    <a href="#services" class="text-gray-400 hover:text-pink-400 text-lg transition-all duration-300">Služby</a>
+                    <a href="#contact" class="text-gray-400 hover:text-cyan-400 text-lg transition-all duration-300">Kontakt</a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-12 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-500 text-lg mb-4 md:mb-0">
+                    &copy; 2023 Cyber Web Design. Všetky práva vyhradené.
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-white text-lg transition-all duration-300">Ochrana osobných údajov</a>
+                    <a href="#" class="text-gray-500 hover:text-white text-lg transition-all duration-300">Podmienky používania</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-10 right-10 w-16 h-16 bg-cyan-600 rounded-full flex items-center justify-center text-white shadow-xl hover:bg-cyan-700 transition-all duration-500 opacity-0 invisible z-40">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <!-- Cyber Modal -->
+    <div id="cyber-modal" class="cyber-modal">
+        <div class="modal-content">
+            <div class="modal-close">&times;</div>
+            <h3 class="text-3xl font-bold orbitron text-cyan-400 mb-6">ĎAKUJEME ZA SPRÁVU!</h3>
+            <p class="text-gray-300 text-lg mb-8">
+                Vaša správa bola úspešne odoslaná. Čoskoro vás budem kontaktovať ohľadom ďalších krokov.
+            </p>
+            <button class="px-8 py-4 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-xl font-bold orbitron text-white hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-500 cyber-btn">
+                ZAVRIEŤ
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Extreme Loading Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            let progress = 0;
+            const progressBar = document.getElementById('cyber-progress');
+            const loader = document.getElementById('cyber-loader');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        gsap.to(loader, {
+                            opacity: 0,
+                            duration: 0.8,
+                            ease: 'power3.out',
+                            onComplete: () => {
+                                loader.style.display = 'none';
+                                initAnimations();
+                            }
+                        });
+                    }, 500);
+                }
+            }, 100);
+            
+            // Matrix Code Rain
+            const matrixRain = document.getElementById('matrix-rain');
+            const chars = "01日ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍｦｲｸｺｿﾁﾄﾉﾌﾔﾖﾙﾚﾛﾝ0123456789Z";
+            const fontSize = 18;
+            const columns = Math.floor(window.innerWidth / fontSize);
+            const drops = [];
+            
+            for (let i = 0; i < columns; i++) {
+                drops[i] = 1;
+            }
+            
+            function drawMatrix() {
+                const matrixCanvas = document.createElement('div');
+                matrixCanvas.style.position = 'fixed';
+                matrixCanvas.style.top = '0';
+                matrixCanvas.style.left = '0';
+                matrixCanvas.style.width = '100%';
+                matrixCanvas.style.height = '100%';
+                matrixCanvas.style.pointerEvents = 'none';
+                matrixCanvas.style.zIndex = '0';
+                matrixCanvas.style.overflow = 'hidden';
+                document.body.appendChild(matrixCanvas);
+                
+                function rain() {
+                    for (let i = 0; i < drops.length; i++) {
+                        const randomChar = chars[Math.floor(Math.random() * chars.length)];
+                        const x = i * fontSize;
+                        const y = drops[i] * fontSize;
+                        
+                        const charElement = document.createElement('div');
+                        charElement.textContent = randomChar;
+                        charElement.style.position = 'absolute';
+                        charElement.style.left = `${x}px`;
+                        charElement.style.top = `${y}px`;
+                        charElement.style.color = `rgba(0, 255, 100, ${Math.random() * 0.5 + 0.1})`;
+                        charElement.style.fontSize = `${fontSize}px`;
+                        charElement.style.fontFamily = 'monospace';
+                        charElement.style.textShadow = '0 0 5px #00ff40';
+                        matrixCanvas.appendChild(charElement);
+                        
+                        if (y > matrixCanvas.clientHeight && Math.random() > 0.975) {
+                            drops[i] = 0;
+                        }
+                        
+                        drops[i]++;
+                    }
+                    
+                    // Remove old characters
+                    const charsToRemove = matrixCanvas.querySelectorAll('div');
+                    if (charsToRemove.length > 1000) {
+                        for (let i = 0; i < 100; i++) {
+                            if (charsToRemove[i]) {
+                                matrixCanvas.removeChild(charsToRemove[i]);
+                            }
+                        }
+                    }
+                }
+                
+                setInterval(rain, 50);
+            }
+            
+            drawMatrix();
+            
+            // Particles.js Config
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#00f9ff"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": true,
+                        "anim": {
+                            "enable": true,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": true,
+                            "speed": 2,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#00f9ff",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 1,
+                        "direction": "none",
+                        "random": true,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+            
+            // Before After Slider
+            const beforeAfter = document.querySelector('.holographic-card');
+            if (beforeAfter) {
+                const before = beforeAfter.querySelector('.before');
+                const slider = beforeAfter.querySelector('.slider');
+                const sliderHandle = beforeAfter.querySelector('.slider-handle');
+                let isDragging = false;
+                
+                sliderHandle.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    e.preventDefault();
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    
+                    const rect = beforeAfter.getBoundingClientRect();
+                    let x = e.clientX - rect.left;
+                    
+                    if (x < 0) x = 0;
+                    if (x > rect.width) x = rect.width;
+                    
+                    const percent = (x / rect.width) * 100;
+                    
+                    before.style.width = `${percent}%`;
+                    slider.style.left = `${percent}%`;
+                    sliderHandle.style.left = `${percent}%`;
+                });
+                
+                // Touch support
+                sliderHandle.addEventListener('touchstart', (e) => {
+                    isDragging = true;
+                    e.preventDefault();
+                });
+                
+                document.addEventListener('touchend', () => {
+                    isDragging = false;
+                });
+                
+                document.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    
+                    const touch = e.touches[0];
+                    const rect = beforeAfter.getBoundingClientRect();
+                    let x = touch.clientX - rect.left;
+                    
+                    if (x < 0) x = 0;
+                    if (x > rect.width) x = rect.width;
+                    
+                    const percent = (x / rect.width) * 100;
+                    
+                    before.style.width = `${percent}%`;
+                    slider.style.left = `${percent}%`;
+                    sliderHandle.style.left = `${percent}%`;
+                });
+            }
+            
+            // Contact form submission
+            const contactForm = document.getElementById('contact-form');
+            const cyberModal = document.getElementById('cyber-modal');
+            const modalClose = document.querySelector('.modal-close');
+            
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const message = document.getElementById('message').value;
+                    
+                    // Here you would typically send the data to a server
+                    console.log({name, email, message});
+                    
+                    // Show modal
+                    cyberModal.classList.add('active');
+                    
+                    // Reset form
+                    contactForm.reset();
+                });
+            }
+            
+            // Close modal
+            modalClose.addEventListener('click', () => {
+                cyberModal.classList.remove('active');
+            });
+            
+            // Close modal when clicking outside
+            cyberModal.addEventListener('click', (e) => {
+                if (e.target === cyberModal) {
+                    cyberModal.classList.remove('active');
+                }
+            });
+            
+            // Back to top button
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    gsap.to(backToTopButton, {
+                        opacity: 1,
+                        visibility: 'visible',
+                        duration: 0.3
+                    });
+                } else {
+                    gsap.to(backToTopButton, {
+                        opacity: 0,
+                        visibility: 'hidden',
+                        duration: 0.3
+                    });
+                }
+            });
+            
+            backToTopButton.addEventListener('click', function() {
+                gsap.to(window, {
+                    scrollTo: 0,
+                    duration: 1,
+                    ease: 'power3.out'
+                });
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        gsap.to(window, {
+                            scrollTo: {
+                                y: targetElement,
+                                offsetY: 80
+                            },
+                            duration: 1,
+                            ease: 'power3.out'
+                        });
+                    }
+                });
+            });
+            
+            // Animate stats
+            function animateStats() {
+                const stat1 = document.getElementById('stat1');
+                const stat2 = document.getElementById('stat2');
+                const stat3 = document.getElementById('stat3');
+                const stat4 = document.getElementById('stat4');
+                
+                if (stat1 && stat2 && stat3 && stat4) {
+                    const stats = [
+                        { element: stat1, target: 127, duration: 2 },
+                        { element: stat2, target: 89, duration: 2.5 },
+                        { element: stat3, target: 10, duration: 1.5 },
+                        { element: stat4, target: 542, duration: 3 }
+                    ];
+                    
+                    stats.forEach(stat => {
+                        let count = 0;
+                        const increment = stat.target / (stat.duration * 60);
+                        
+                        const timer = setInterval(() => {
+                            count += increment;
+                            if (count >= stat.target) {
+                                count = stat.target;
+                                clearInterval(timer);
+                            }
+                            
+                            if (stat.element === stat4) {
+                                stat.element.textContent = Math.floor(count) + "K";
+                            } else {
+                                stat.element.textContent = Math.floor(count);
+                            }
+                        }, 1000 / 60);
+                    });
+                }
+            }
+            
+            // Initialize animations
+            function initAnimations() {
+                // Register ScrollTrigger plugin
+                gsap.registerPlugin(ScrollTrigger);
+                
+                // Animate hero section elements
+                gsap.from('#hero .cyber-badge', {
+                    y: -50,
+                    opacity: 0,
+                    duration: 1,
+                    ease: 'power3.out'
+                });
+                
+                gsap.from('#hero h1 span', {
+                    y: 100,
+                    opacity: 0,
+                    duration: 1.5,
+                    stagger: 0.3,
+                    ease: 'power3.out',
+                    delay: 0.5
+                });
+                
+                gsap.from('#hero p', {
+                    y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    ease: 'power3.out',
+                    delay: 1.2
+                });
+                
+                gsap.from('#hero a', {
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: 'power3.out',
+                    delay: 1.5
+                });
+                
+                // Animate section headings
+                gsap.utils.toArray('section').forEach(section => {
+                    const heading = section.querySelector('h2');
+                    const divider = section.querySelector('.w-32');
+                    const subtitle = section.querySelector('p');
+                    
+                    if (heading) {
+                        gsap.from(heading, {
+                            scrollTrigger: {
+                                trigger: heading,
+                                start: 'top 80%',
+                                toggleActions: 'play none none none'
+                            },
+                            y: 100,
+                            opacity: 0,
+                            duration: 1,
+                            ease: 'power3.out'
+                        });
+                    }
+                    
+                    if (divider) {
+                        gsap.from(divider, {
+                            scrollTrigger: {
+                                trigger: divider,
+                                start: 'top 80%',
+                                toggleActions: 'play none none none'
+                            },
+                            scaleX: 0,
+                            opacity: 0,
+                            duration: 1.5,
+                            ease: 'power3.out'
+                        });
+                    }
+                    
+                    if (subtitle) {
+                        gsap.from(subtitle, {
+                            scrollTrigger: {
+                                trigger: subtitle,
+                                start: 'top 80%',
+                                toggleActions: 'play none none none'
+                            },
+                            y: 50,
+                            opacity: 0,
+                            duration: 1,
+                            ease: 'power3.out'
+                        });
+                    }
+                });
+                
+                // Animate about section
+                gsap.from('.holographic-card', {
+                    scrollTrigger: {
+                        trigger: '.holographic-card',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    },
+                    y: 100,
+                    opacity: 0,
+                    duration: 1,
+                    ease: 'power3.out'
+                });
+                
+                gsap.from('.timeline-item', {
+                    scrollTrigger: {
+                        trigger: '.timeline-item',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    },
+                    x: -50,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: 'power3.out'
+                });
+                
+                // Animate services
+                gsap.utils.toEach('.service-card', (card, i) => {
+                    gsap.from(card, {
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 100,
+                        opacity: 0,
+                        duration: 0.8,
+                        delay: i * 0.1,
+                        ease: 'power3.out'
+                    });
+                });
+                
+                // Animate 3D cube
+                gsap.from('.cyber-cube', {
+                    scrollTrigger: {
+                        trigger: '.cyber-cube',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    },
+                    scale: 0.5,
+                    opacity: 0,
+                    duration: 1.5,
+                    ease: 'elastic.out(1, 0.5)'
+                });
+                
+                // Animate stats when visible
+                ScrollTrigger.create({
+                    trigger: "#stat1",
+                    start: "top 80%",
+                    onEnter: animateStats,
+                    once: true
+                });
+                
+                // Animate contact form
+                gsap.from('#contact-form', {
+                    scrollTrigger: {
+                        trigger: '#contact-form',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    },
+                    x: -100,
+                    opacity: 0,
+                    duration: 1,
+                    ease: 'power3.out'
+                });
+                
+                gsap.from('#contact .holographic-card', {
+                    scrollTrigger: {
+                        trigger: '#contact .holographic-card',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    },
+                    x: 100,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.2,
+                    ease: 'power3.out'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
